@@ -14,26 +14,26 @@ class LandingPage extends StatelessWidget {
           SizedBox.expand(
             child: Image.asset(
               'assets/images/landing_screen.png',
-              fit: BoxFit.cover,
+              fit: BoxFit.fill,
             ),
           ),
           // Content positioned at the bottom
           Align(
-            alignment: Alignment.bottomRight,
+            alignment: Alignment.bottomCenter,
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.white
-                    .withOpacity(0.7
+                    .withOpacity(0.8
                     ), // Adjust opacity for better visibility
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                     color:
-                        Colors.white.withOpacity(0.5)), // Slightly more visible
+                        Colors.white.withOpacity(0.8)), // Slightly more visible
               ),
               margin:
-                  const EdgeInsets.only(bottom: 50, right: 120), // Margin from the bottom
-              child: Column(
+                  const EdgeInsets.only(bottom: 60), // Margin from the bottom
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _buildModernButton(
@@ -46,7 +46,7 @@ class LandingPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(width: 16),
                   _buildModernButton(
                     context,
                     label: 'Settings',

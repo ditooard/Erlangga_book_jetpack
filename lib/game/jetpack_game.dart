@@ -14,11 +14,15 @@ class JetpackGame extends FlameGame with TapDetector, HasCollisionDetection {
   late Timer coinTimer;
   late Timer enemyTimer;
   final GameController controller;
-  final double backgroundSpeed = 100; // pixels per second
+  final double backgroundSpeed = 100;
   Random rng = Random();
 
   bool prologueShown = false;
   bool prologueEndingShown = false;
+
+  // Untuk Boss
+  bool bossSpawned = false;
+  BossRobot? boss;
 
   JetpackGame(this.controller);
 
@@ -46,7 +50,8 @@ class JetpackGame extends FlameGame with TapDetector, HasCollisionDetection {
     await add(player);
 
     coinTimer = Timer(1.5, repeat: true, onTick: spawnCoin)..start();
-    enemyTimer = Timer(3, repeat: true, onTick: spawnEnemy)..start();
+    enemyTimer = Timer(enemySpawnInterval, repeat: true, onTick: spawnEnemy)
+      ..start();
 
     final upSprite = await loadSprite('arrow_up.png');
     add(
@@ -65,13 +70,41 @@ class JetpackGame extends FlameGame with TapDetector, HasCollisionDetection {
     );
   }
 
+  // Enemy speed dan interval berdasarkan skor
+  double get enemySpeed {
+    if (controller.score >= 50) return 400;
+    if (controller.score >= 30) return 300;
+    if (controller.score >= 15) return 200;
+    return 120;
+  }
+
+  double get enemySpawnInterval {
+    if (controller.score >= 50) return 0.7;
+    if (controller.score >= 30) return 1.2;
+    if (controller.score >= 15) return 2.0;
+    return 3.0;
+  }
+
+  int get enemySpawnCount {
+    return 1;
+  }
+
   @override
   void update(double dt) {
     super.update(dt);
+
+    // Update enemyTimer jika interval berubah
+    if (!enemyTimer.isRunning() || enemyTimer.limit != enemySpawnInterval) {
+      enemyTimer.stop();
+      enemyTimer = Timer(enemySpawnInterval, repeat: true, onTick: spawnEnemy)
+        ..start();
+    }
+
     coinTimer.update(dt);
     enemyTimer.update(dt);
     checkCollisions();
 
+    // Scroll background
     background1.x -= backgroundSpeed * dt;
     background2.x -= backgroundSpeed * dt;
 
@@ -81,12 +114,24 @@ class JetpackGame extends FlameGame with TapDetector, HasCollisionDetection {
     if (background2.x <= -size.x) {
       background2.x = background1.x + size.x;
     }
+
+    // Munculkan boss setelah skor 50
+    if (controller.score >= 20 && !bossSpawned) {
+      spawnBoss();
+      bossSpawned = true;
+    }
+
+    // Hilangkan boss setelah skor 100
+    if (controller.score >= 30 && boss != null) {
+      boss!.removeFromParent();
+      boss = null;
+    }
   }
 
   void spawnCoin() async {
     final coinSprite = await loadSprite('coin.png');
     final coin = Coin(sprite: coinSprite)
-      ..size = Vector2(30, 30)
+      ..size = Vector2(50, 50)
       ..position = Vector2(size.x, rng.nextDouble() * (size.y - 30));
     add(coin);
     coin.add(
@@ -99,45 +144,56 @@ class JetpackGame extends FlameGame with TapDetector, HasCollisionDetection {
   }
 
   void spawnEnemy() async {
-    final enemySprite = await loadSprite('robot.png');
-    final enemy = EnemyRobot(sprite: enemySprite)
-      ..size = Vector2(100, 100)
-      ..position = Vector2(size.x, rng.nextDouble() * (size.y - 60));
-    add(enemy);
-    enemy.add(
-      MoveEffect.to(
-        Vector2(-60, enemy.y),
-        EffectController(duration: 3),
-        onComplete: () => enemy.removeFromParent(),
-      ),
-    );
+    for (int i = 0; i < enemySpawnCount; i++) {
+      final enemySprite = await loadSprite('robot.png');
+      final enemy = EnemyRobot(sprite: enemySprite)
+        ..size = Vector2(200, 200)
+        ..position = Vector2(size.x, rng.nextDouble() * (size.y - 60));
+      add(enemy);
+      enemy.add(
+        MoveEffect.to(
+          Vector2(-60, enemy.y),
+          EffectController(duration: size.x / enemySpeed),
+          onComplete: () => enemy.removeFromParent(),
+        ),
+      );
+    }
   }
 
   void checkCollisions() {
+    // Coin collision
     children.whereType<Coin>().toList().forEach((coin) {
       if (player.toRect().overlaps(coin.toRect())) {
         controller.addScore(1);
 
-        if (controller.score == 10 && !prologueShown) {
+        if (controller.score == 20 && !prologueShown) {
           pauseEngine();
           overlays.add('PrologueOverlay');
           prologueShown = true;
           changeAssets();
-        } else if (controller.score == 20 && !prologueEndingShown) {
+        } else if (controller.score == 40 && !prologueEndingShown) {
           pauseEngine();
           overlays.add('PrologueOverlayEnding');
           prologueEndingShown = true;
           changeAssets2();
         }
-
         coin.removeFromParent();
       }
     });
 
+    // Enemy collision
     children.whereType<EnemyRobot>().toList().forEach((enemy) {
       if (player.toRect().overlaps(enemy.toRect())) {
         controller.addScore(-1);
         enemy.removeFromParent();
+      }
+    });
+
+    // Laser boss collision
+    children.whereType<Laser>().toList().forEach((laser) {
+      if (player.toRect().overlaps(laser.toRect())) {
+        controller.addScore(-5);
+        laser.removeFromParent();
       }
     });
   }
@@ -151,16 +207,14 @@ class JetpackGame extends FlameGame with TapDetector, HasCollisionDetection {
   Future<void> changeAssets() async {
     final newBgSprite = await loadSprite('background_2.png');
     final newPlayerSprite = await loadSprite('player_2.png');
-
     background1.sprite = newBgSprite;
     background2.sprite = newBgSprite;
     player.sprite = newPlayerSprite;
   }
 
   Future<void> changeAssets2() async {
-    final newBgSprite = await loadSprite('background_3.jpg');
+    final newBgSprite = await loadSprite('background_3.png');
     final newPlayerSprite = await loadSprite('player_3.png');
-
     background1.sprite = newBgSprite;
     background2.sprite = newBgSprite;
     player.sprite = newPlayerSprite;
@@ -184,6 +238,15 @@ class JetpackGame extends FlameGame with TapDetector, HasCollisionDetection {
     });
     player.position = Vector2(50, size.y / 2);
     player.velocity = Vector2.zero();
+    bossSpawned = false;
+    boss = null;
+  }
+
+  // Boss logic
+  void spawnBoss() async {
+    final bossSprite = await loadSprite('boss_robot.png');
+    boss = BossRobot(sprite: bossSprite);
+    add(boss!);
   }
 }
 
@@ -238,4 +301,45 @@ class Coin extends SpriteComponent {
 
 class EnemyRobot extends SpriteComponent {
   EnemyRobot({super.sprite});
+}
+
+// Boss robot yang menembak laser
+class BossRobot extends SpriteComponent with HasGameRef<JetpackGame> {
+  Timer? laserTimer;
+
+  BossRobot({super.sprite});
+
+  @override
+  Future<void> onLoad() async {
+    size = Vector2(300, 300);
+    position = Vector2(gameRef.size.x - 350, gameRef.size.y / 2 - 150);
+
+    laserTimer = Timer(2, repeat: true, onTick: fireLaser)..start();
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    laserTimer?.update(dt);
+  }
+
+  void fireLaser() async {
+    final laserSprite = await gameRef.loadSprite('laser.png');
+    final laser = Laser(sprite: laserSprite)
+      ..size = Vector2(150, 20)
+      ..position = Vector2(position.x - 100, position.y + size.y / 2 - 10);
+    gameRef.add(laser);
+
+    laser.add(
+      MoveEffect.to(
+        Vector2(-100, laser.y),
+        EffectController(duration: 2),
+        onComplete: () => laser.removeFromParent(),
+      ),
+    );
+  }
+}
+
+class Laser extends SpriteComponent {
+  Laser({super.sprite});
 }

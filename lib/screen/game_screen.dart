@@ -39,8 +39,8 @@ class GameScreen extends StatelessWidget {
             child: AnimatedBuilder(
               animation: controller,
               builder: (_, __) => Text(
-                'Score: ${controller.score}',
-                style: const TextStyle(color: Colors.white, fontSize: 24),
+                'Buku  : ${controller.score}',
+                style: const TextStyle(color: Colors.white, fontSize: 24, fontStyle: FontStyle.italic),
               ),
             ),
           ),
