@@ -72,16 +72,16 @@ class JetpackGame extends FlameGame with TapDetector, HasCollisionDetection {
 
   // Enemy speed dan interval berdasarkan skor
   double get enemySpeed {
-    if (controller.score >= 50) return 400;
-    if (controller.score >= 30) return 300;
-    if (controller.score >= 15) return 200;
+    if (controller.score >= 30) return 400;
+    if (controller.score >= 20) return 300;
+    if (controller.score >= 10) return 200;
     return 120;
   }
 
   double get enemySpawnInterval {
-    if (controller.score >= 50) return 0.7;
-    if (controller.score >= 30) return 1.2;
-    if (controller.score >= 15) return 2.0;
+    if (controller.score >= 30) return 0.7;
+    if (controller.score >= 20) return 1.2;
+    if (controller.score >= 10) return 2.0;
     return 3.0;
   }
 
@@ -166,12 +166,12 @@ class JetpackGame extends FlameGame with TapDetector, HasCollisionDetection {
       if (player.toRect().overlaps(coin.toRect())) {
         controller.addScore(1);
 
-        if (controller.score == 20 && !prologueShown) {
+        if (controller.score == 10 && !prologueShown) {
           pauseEngine();
           overlays.add('PrologueOverlay');
           prologueShown = true;
           changeAssets();
-        } else if (controller.score == 40 && !prologueEndingShown) {
+        } else if (controller.score == 20 && !prologueEndingShown) {
           pauseEngine();
           overlays.add('PrologueOverlayEnding');
           prologueEndingShown = true;
