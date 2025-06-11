@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
 import 'package:jetpack_joy/controller/game_controller.dart';
 import 'package:jetpack_joy/game/jetpack_game.dart';
+import 'package:jetpack_joy/screen/epilogue_scene.dart';
 import 'package:jetpack_joy/screen/overlay.dart';
 import 'package:jetpack_joy/screen/overlay_ending.dart'; // Pastikan file ini ada
 
@@ -31,6 +32,7 @@ class GameScreen extends StatelessWidget {
                       game.resumeEngine();
                     },
                   ),
+              'EpilogueOverlay': (context, _) => EpilogueScreen(),
             },
           ),
           Positioned(
@@ -40,7 +42,10 @@ class GameScreen extends StatelessWidget {
               animation: controller,
               builder: (_, __) => Text(
                 'Buku  : ${controller.score}',
-                style: const TextStyle(color: Colors.white, fontSize: 24, fontStyle: FontStyle.italic),
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontStyle: FontStyle.italic),
               ),
             ),
           ),

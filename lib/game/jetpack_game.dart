@@ -217,13 +217,21 @@ class JetpackGame extends FlameGame with TapDetector, HasCollisionDetection {
           }
         }
       });
+
       // bullets vs BossRobot
       if (boss != null && bullet.toRect().overlaps(boss!.toRect())) {
         bullet.removeFromParent();
         boss!.hitCount += 1;
-        if (boss!.hitCount >= 500) {
+        if (boss!.hitCount >= 100) {
+          // 1) Hapus boss dari game
           boss!.removeFromParent();
           boss = null;
+
+          // 2) Pause game supaya animasi berhenti
+          pauseEngine();
+
+          // 3) Panggil overlay Epilogue
+          overlays.add('EpilogueOverlay');
         }
       }
     });
