@@ -1,3 +1,4 @@
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
@@ -9,6 +10,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Flame.device.fullScreen();
   await Flame.device.setLandscape();
+
+  await FlameAudio.bgm.initialize();
+  FlameAudio.bgm.play('background_music.mp3', volume: 0.5);
+  
   runApp(const MyApp());
 }
 

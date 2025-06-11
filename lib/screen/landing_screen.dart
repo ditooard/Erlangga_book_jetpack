@@ -24,8 +24,7 @@ class LandingPage extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.white
-                    .withOpacity(0.8
-                    ), // Adjust opacity for better visibility
+                    .withOpacity(0.8), // Adjust opacity for better visibility
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                     color:
