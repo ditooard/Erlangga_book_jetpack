@@ -1,10 +1,7 @@
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flame/flame.dart';
-import 'package:flame/game.dart';
-import 'package:jetpack_joy/controller/game_controller.dart';
 import 'package:jetpack_joy/screen/landing_screen.dart';
-import 'game/jetpack_game.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:jetpack_joy/controller/game_controller.dart';
 import 'package:jetpack_joy/screen/game_screen.dart';
 import 'package:jetpack_joy/game/jetpack_game.dart';
-import 'package:flame/game.dart';
 
 class PrologueScreen extends StatefulWidget {
   const PrologueScreen({super.key});
