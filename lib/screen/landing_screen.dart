@@ -1,3 +1,4 @@
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:jetpack_joy/screen/setting_screen.dart';
 import 'package:jetpack_joy/screen/prologue_scene.dart';
@@ -38,12 +39,18 @@ class LandingPage extends StatelessWidget {
                   _buildModernButton(
                     context,
                     label: 'Start Game',
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const PrologueScreen(),
-                      ),
-                    ),
+                    onPressed: () {
+                      // Mulai audio setelah user klik
+                      FlameAudio.bgm.play('background_music.mp3', volume: 0.5);
+
+                      // Lanjut ke prologue screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PrologueScreen(),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(width: 16),
                   _buildModernButton(

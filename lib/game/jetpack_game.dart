@@ -89,16 +89,16 @@ class JetpackGame extends FlameGame with TapDetector, HasCollisionDetection {
   }
 
   double get enemySpeed {
-    if (controller.score >= 150) return 400;
-    if (controller.score >= 100) return 300;
-    if (controller.score >= 50) return 200;
+    if (controller.score >= 45) return 400;
+    if (controller.score >= 30) return 300;
+    if (controller.score >= 15) return 200;
     return 120;
   }
 
   double get enemySpawnInterval {
-    if (controller.score >= 150) return 0.7;
-    if (controller.score >= 100) return 1.2;
-    if (controller.score >= 50) return 2.0;
+    if (controller.score >= 45) return 0.7;
+    if (controller.score >= 30) return 1.2;
+    if (controller.score >= 15) return 2.0;
     return 3.0;
   }
 
@@ -132,7 +132,7 @@ class JetpackGame extends FlameGame with TapDetector, HasCollisionDetection {
     }
 
     // Boss logic based on score
-    if (controller.score >= 100 && !bossSpawned) {
+    if (controller.score >= 30 && !bossSpawned) {
       spawnBoss();
       bossSpawned = true;
     }
@@ -222,7 +222,7 @@ class JetpackGame extends FlameGame with TapDetector, HasCollisionDetection {
       if (boss != null && bullet.toRect().overlaps(boss!.toRect())) {
         bullet.removeFromParent();
         boss!.hitCount += 1;
-        if (boss!.hitCount >= 100) {
+        if (boss!.hitCount >= 30) {
           // 1) Hapus boss dari game
           boss!.removeFromParent();
           boss = null;
@@ -240,12 +240,12 @@ class JetpackGame extends FlameGame with TapDetector, HasCollisionDetection {
     children.whereType<Coin>().toList().forEach((coin) {
       if (player.toRect().overlaps(coin.toRect())) {
         controller.addScore(1);
-        if (controller.score == 50 && !prologueShown) {
+        if (controller.score == 15 && !prologueShown) {
           pauseEngine();
           overlays.add('PrologueOverlay');
           prologueShown = true;
           changeAssets();
-        } else if (controller.score == 100 && !prologueEndingShown) {
+        } else if (controller.score == 30 && !prologueEndingShown) {
           pauseEngine();
           overlays.add('PrologueOverlayEnding');
           prologueEndingShown = true;
