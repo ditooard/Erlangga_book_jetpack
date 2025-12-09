@@ -331,17 +331,17 @@ class Player extends SpriteComponent with HasGameRef<JetpackGame> {
   final Vector2 gravity = Vector2(0, 600);
   final Vector2 thrust = Vector2(0, -800);
 
-  Player({Sprite? sprite}) : super(sprite: sprite) {
+  Player({super.sprite}) {
     size = Vector2(100, 100);
   }
 
   bool isInitialized = false;
 
   @override
-  void onGameResize(Vector2 gameSize) {
-    super.onGameResize(gameSize);
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
     if (!isInitialized) {
-      position = Vector2(50, gameSize.y / 2);
+      position = Vector2(50, size.y / 2);
       isInitialized = true;
     }
   }
@@ -367,19 +367,19 @@ class Player extends SpriteComponent with HasGameRef<JetpackGame> {
 }
 
 class Coin extends SpriteComponent {
-  Coin({Sprite? sprite}) : super(sprite: sprite);
+  Coin({super.sprite});
 }
 
 class EnemyRobot extends SpriteComponent {
   int hitCount = 0;
-  EnemyRobot({Sprite? sprite}) : super(sprite: sprite);
+  EnemyRobot({super.sprite});
 }
 
 class BossRobot extends SpriteComponent with HasGameRef<JetpackGame> {
   int hitCount = 0;
   Timer? laserTimer;
 
-  BossRobot({Sprite? sprite}) : super(sprite: sprite);
+  BossRobot({super.sprite});
 
   @override
   Future<void> onLoad() async {
@@ -411,14 +411,14 @@ class BossRobot extends SpriteComponent with HasGameRef<JetpackGame> {
 }
 
 class Laser extends SpriteComponent {
-  Laser({Sprite? sprite}) : super(sprite: sprite) {
+  Laser({super.sprite}) {
     size = Vector2(150, 20);
   }
 }
 
 // Bullet yang ditembakkan player
 class Bullet extends SpriteComponent with HasGameRef<JetpackGame> {
-  Bullet({Sprite? sprite}) : super(sprite: sprite) {
+  Bullet({super.sprite}) {
     size = Vector2(60, 20);
   }
 
@@ -440,7 +440,7 @@ class Bullet extends SpriteComponent with HasGameRef<JetpackGame> {
 
 // Item yang memberikan kemampuan menembak
 class GunItem extends SpriteComponent {
-  GunItem({Sprite? sprite}) : super(sprite: sprite) {
+  GunItem({super.sprite}) {
     size = Vector2(70, 70);
   }
 }

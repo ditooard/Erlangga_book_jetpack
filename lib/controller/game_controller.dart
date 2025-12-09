@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import '../game/jetpack_game.dart';
 
 class GameController extends ChangeNotifier {
   bool _isPaused = false;
